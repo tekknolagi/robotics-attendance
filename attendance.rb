@@ -36,10 +36,13 @@ get '/login' do
 end
 
 post '/login' do
-  unless session[:user]
-    session[:user] = params["pass"]
-  end
+  session[:user] = params["pass"]
   redirect '/'
+end
+
+get '/logout' do
+  session[:user] = "invalid"
+  erb :logout
 end
 
 post '/' do
