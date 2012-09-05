@@ -4,6 +4,9 @@ require 'sqlite3'
 require 'date'
 
 configure do
+  enable :sessions
+  $password = "machine8"
+
   $db_name = "attendance.db"
   unless File.exists? $db_name
     $db = SQLite3::Database.new($db_name)
@@ -22,7 +25,21 @@ configure do
 end
 
 get '/' do
+  unless session[:user] == $password
+    redirect '/login'
+  end
   erb :index
+end
+
+get '/login' do
+  erb :login
+end
+
+post '/login' do
+  unless session[:user]
+    session[:user] = params["pass"]
+  end
+  redirect '/'
 end
 
 post '/' do
