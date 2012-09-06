@@ -55,7 +55,7 @@ end
 
 post '/login' do
   session[:user] = params["pass"]
-  redirect session[:where]
+  redirect session[:where] || "/"
 end
 
 get '/logout' do
