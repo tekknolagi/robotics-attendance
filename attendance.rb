@@ -70,7 +70,9 @@ end
 
 post '/add' do
   do_auth
-  insert_student(session[:id], params["name"])
+  unless known_student? session[:id]
+    insert_student(session[:id], params["name"])
+  end
   redirect '/'
 end
 
