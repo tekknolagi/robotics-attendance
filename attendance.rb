@@ -72,7 +72,7 @@ post '/add' do
   do_auth
   unless known_student? session[:id]
     insert_student(session[:id], params["name"])
-    checkin_student(params["id"])
+    checkin_student(session[:id])
   end
   redirect '/'
 end
