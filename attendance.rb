@@ -70,8 +70,8 @@ end
 
 post '/add' do
   do_auth
-  insert_student(params["id"], params["name"])
-  erb :add
+  insert_student(session[:id], params["name"])
+  redirect '/'
 end
 
 post '/' do
@@ -79,6 +79,7 @@ post '/' do
   if known_student? params["id"]
     checkin_student(params["id"])
   else
+    session[:id] = params["id"]
     redirect '/add'
   end
   erb :index
