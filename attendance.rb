@@ -40,6 +40,10 @@ def do_auth
   end
 end
 
+def known_student?(id)
+  return $db.execute("select name from student where id = ?", id).flatten.uniq != []
+end
+
 get '/' do
   do_auth
   erb :index
@@ -72,7 +76,11 @@ end
 
 post '/' do
   do_auth
-  checkin_student(params["id"])
+  if known_student? params["id"]
+    checkin_student(params["id"])
+  else
+    redirect '/add'
+  end
   erb :index
 end
 
