@@ -1,32 +1,51 @@
 require 'rubygems'
 require 'sinatra'
-require 'sqlite3'
 require 'date'
 
 configure do
   enable :sessions
-  $password = "machine8"
 
-  $db_name = "attendance.db"
-  unless File.exists? $db_name
-    $db = SQLite3::Database.new($db_name)
-    $db.execute("create table student (id int, name text)")
-    $db.execute("create table signin  (time int, date text, id int)")
+  $password = "machine8"
+  $backend = "redis"
+
+  if $backend == "sqlite"
+    require 'sqlite3'
+    $db_name = "attendance.db"
+    unless File.exists? $db_name
+      $db = SQLite3::Database.new($db_name)
+      $db.execute("create table student (id int, name text)")
+      $db.execute("create table signin  (time int, date text, id int)")
+    else
+      $db = SQLite3::Database.new($db_name)
+    end
   else
-    $db = SQLite3::Database.new($db_name)
+    require 'redis'
+    $redis = Redis.new
   end
 end
 
 def insert_student(id, name)
-  $db.execute("insert into student values ( ? , ? )", id, name)
+  if $backend == "sqlite"
+    $db.execute("insert into student values ( ? , ? )", id, name)
+  else
+    $redis.set "student:#{id}", name
+  end
 end
 
 def checkin_student(id)
-  $db.execute("insert into signin values ( ? , ? , ? )", DateTime.now.to_time.to_i.to_s, "#{DateTime.now.month}/#{DateTime.now.day}", id)
+  if $backend == "sqlite"
+    $db.execute("insert into signin values ( ? , ? , ? )", DateTime.now.to_time.to_i.to_s, "#{DateTime.now.month}/#{DateTime.now.day}", id)
+  else
+    $redis.set "signin:#{DateTime.now.month}:#{DateTime.now.day}:#{id}", $redis.get("student:#{id}")
+  end
 end
 
 def list_students(month, day)
-  return $db.execute("select student.name from signin inner join student on signin.id=student.id where signin.date = '#{month}/#{day}' order by time").flatten.uniq
+  if $backend == "sqlite"
+    return $db.execute("select student.name from signin inner join student on signin.id=student.id where signin.date = '#{month}/#{day}' order by time").flatten.uniq
+  else
+    return $redis.mget($redis.keys "signin:#{month}:#{day}:*")
+  end
 end
 
 def signed_in?
@@ -41,7 +60,11 @@ def do_auth
 end
 
 def known_student?(id)
-  return $db.execute("select name from student where id = ?", id).flatten.uniq != []
+  if $backend == "sqlite"
+    return $db.execute("select name from student where id = ?", id).flatten.uniq != []
+  else
+    return $redis.get("student:#{id}") != nil
+  end
 end
 
 get '/' do
