@@ -1,4 +1,8 @@
-<b>Whoops! Looks like we don't know you. Please enter your name :D</b>
+<head><link rel='stylesheet' type='text/css' href='/main.css' /></head>
+
+<div class="main">
+<div class="scan">
+  <p>Whoops! Looks like we don't know you. Please enter your name below.</p></div>
 <br>
 <form name='add' action='/add' method='post'>
   Name:<br>
@@ -7,10 +11,11 @@
   <input type='submit' value='Submit' />
 </form>
 
-<%= erb :footer, :layout => false %>
-
+<a href='/logout'>Logout</a><br>
+<a href='/'>Home</a>
 <script type="text/javascript" language="javascript">
 window.onload = function() {
   document.getElementById("name").focus();
 }
 </script>
+</div>
