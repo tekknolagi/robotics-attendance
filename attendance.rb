@@ -1,4 +1,4 @@
-B1;2crequire 'rubygems'
+require 'rubygems'
 require 'sinatra'
 require 'date'
 
@@ -27,7 +27,7 @@ configure do
   else
     require 'redis'
     $redis = Redis.new
-    $password = Redis.get "password"
+    $password = $redis.get "password"
   end
 end
 
