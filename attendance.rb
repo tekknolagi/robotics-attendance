@@ -2,6 +2,12 @@ require 'rubygems'
 require 'sinatra'
 require 'date'
 
+# to list all students:
+# $redis.mget(r.keys 'student*')
+
+# to list all checkins for 9/7 (M/D)
+# $redis.mget(r.keys 'signin:9:7*')
+
 configure do
   enable :sessions
 
