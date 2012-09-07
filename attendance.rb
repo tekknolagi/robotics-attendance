@@ -10,6 +10,7 @@ require 'date'
 
 configure do
   enable :sessions
+  set :environment, :development
 
   $password = "machine8"
   $backend = "redis"
@@ -51,6 +52,7 @@ def list_students(month, day)
   if $backend == "sqlite"
     return $db.execute("select student.name from signin inner join student on signin.id=student.id where signin.date = '#{month}/#{day}' order by time").flatten.uniq
   else
+    $redis = Redis.new
     return $redis.mget($redis.keys "signin:#{month}:#{day}:*")
   end
 end
@@ -70,6 +72,7 @@ def known_student?(id)
   if $backend == "sqlite"
     return $db.execute("select name from student where id = ?", id).flatten.uniq != []
   else
+    $redis = Redis.new
     return $redis.get("student:#{id}") != nil
   end
 end

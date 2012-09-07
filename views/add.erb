@@ -1,21 +1,22 @@
-<head><link rel='stylesheet' type='text/css' href='/main.css' /></head>
+<%= erb :header, :layout => false %>
+<body>
+  <div class="main">
+    <div class="scan">
+      <p>Whoops! Looks like we don't know you. Please enter your name below.</p></div>
+    <br>
+    <form name='add' action='/add' method='post'>
+      Name:<br>
+      <input type='text' name='name' id='name' />
+      <br>
+      <input type='submit' value='Submit' />
+    </form>
 
-<div class="main">
-<div class="scan">
-  <p>Whoops! Looks like we don't know you. Please enter your name below.</p></div>
-<br>
-<form name='add' action='/add' method='post'>
-  Name:<br>
-  <input type='text' name='name' id='name' />
-  <br>
-  <input type='submit' value='Submit' />
-</form>
-
-<a href='/logout'>Logout</a><br>
-<a href='/'>Home</a>
-<script type="text/javascript" language="javascript">
-window.onload = function() {
-  document.getElementById("name").focus();
-}
-</script>
-</div>
+    <a href='/logout'>Logout</a><br>
+    <a href='/'>Home</a>
+    <script type="text/javascript" language="javascript">
+      window.onload = function() {
+      document.getElementById("name").focus();
+      }
+    </script>
+  </div>
+</body>

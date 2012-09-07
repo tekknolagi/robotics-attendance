@@ -1,7 +1,11 @@
-<ul>
+<%= erb :header, :layout => false %>
+
+<body>
+<ul style="color:white">
   <% @people.each {|person| %>
   <li><%= person %></li>
   <% } %>
 </ul>
+</body>
 
 <%= erb :footer, :layout => false %>
