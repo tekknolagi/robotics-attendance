@@ -1,14 +1,14 @@
 <%= erb :header, :layout => false %>
 
 <body>
-<div style="text-align:center;">
-  <b style="color:white; font-size: 20px">You need to log in to start signing people in!</b>
-  <br>
-  <form name='signin' action='/login' method='post'>
-    <input type='password' name='pass' id='pass' />
-    <input type='submit' value='Submit' />
-  </form>
-</div>
+  <div style="text-align:center;">
+    <b style="color:white; font-size: 20px">You need to log in to start signing people in!</b>
+    <br>
+    <form name='signin' action='/login' method='post'>
+      <input type='password' name='pass' id='pass' />
+      <input type='submit' value='Submit' />
+    </form>
+  </div>
 </body>
 
 <%= erb :footer, :layout => false %>
