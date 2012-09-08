@@ -4,7 +4,7 @@
   <ul style="color:white">
     <% if @people != [] %>
     <div style="color: white; font-size: 40px; font-family: 'Courier New'">
-      [ ... ]
+      [ ... ].length = <%= @people.length %>
     </div>
     <br>
     <% @people.each {|person| %>
@@ -12,7 +12,7 @@
     <% } %>
     <% else %>
     <div style="color: white; font-size: 40px; font-family: 'Courier New'">
-      []
+      [].length = 0
     </div>
     <% end %>
   </ul>
