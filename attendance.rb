@@ -52,8 +52,14 @@ def list_students(month, day)
   if $backend == "sqlite"
     return $db.execute("select student.name from signin inner join student on signin.id=student.id where signin.date = '#{month}/#{day}' order by time").flatten.uniq
   else
+    Redis.current.quit
     $redis = Redis.new
-    return $redis.mget($redis.keys "signin:#{month}:#{day}:*")
+    signins = $redis.keys "signin:#{month}:#{day}:*"
+    if signins != []
+      return $redis.mget(signins)
+    else
+      return []
+    end
   end
 end
 
@@ -72,6 +78,7 @@ def known_student?(id)
   if $backend == "sqlite"
     return $db.execute("select name from student where id = ?", id).flatten.uniq != []
   else
+    Redis.current.quit
     $redis = Redis.new
     return $redis.get("student:#{id}") != nil
   end
