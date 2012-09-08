@@ -2,9 +2,19 @@
 
 <body>
   <ul style="color:white">
+    <% if @people != [] %>
+    <div style="color: white; font-size: 40px; font-family: 'Courier New'">
+      [ ... ]
+    </div>
+    <br>
     <% @people.each {|person| %>
     <li><%= person %></li>
     <% } %>
+    <% else %>
+    <div style="color: white; font-size: 40px; font-family: 'Courier New'">
+      []
+    </div>
+    <% end %>
   </ul>
 </body>
 
