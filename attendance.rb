@@ -63,6 +63,21 @@ def list_students(month, day)
   end
 end
 
+def all_students
+  if $backend == "sqlite"
+    return $db.execute("select name from student").flatten.uniq
+  else
+    Redis.current.quit
+    $redis = Redis.new
+    students = $redis.keys "student*"
+    if students != []
+      return $redis.mget(students)
+    else
+      return []
+    end
+  end
+end
+
 def signed_in?
   return session[:user] == $password
 end
@@ -126,6 +141,12 @@ post '/' do
     redirect '/add'
   end
   erb :index
+end
+
+get '/students' do
+  do_auth
+  @people = all_students
+  erb :display
 end
 
 get '/today' do
