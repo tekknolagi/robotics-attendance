@@ -28,7 +28,7 @@ configure do
   else
     require 'redis'
     $redis = Redis.new
-    $password = $redis.get "password"
+    $password = $redis.get "attendance:password"
   end
 end
 
@@ -36,7 +36,7 @@ def insert_student(id, name)
   if $backend == "sqlite"
     $db.execute("insert into student values ( ? , ? )", id, name)
   else
-    $redis.set "student:#{id}", name
+    $redis.set "attendance:student:#{id}", name
   end
 end
 
@@ -44,7 +44,7 @@ def checkin_student(id)
   if $backend == "sqlite"
     $db.execute("insert into signin values ( ? , ? , ? )", DateTime.now.to_time.to_i.to_s, "#{DateTime.now.month}/#{DateTime.now.day}", id)
   else
-    $redis.set "signin:#{DateTime.now.month}:#{DateTime.now.day}:#{id}", $redis.get("student:#{id}")
+    $redis.set "attendance:signin:#{DateTime.now.month}:#{DateTime.now.day}:#{id}", $redis.get("student:#{id}")
   end
 end
 
@@ -54,7 +54,7 @@ def list_students(month, day)
   else
     Redis.current.quit
     $redis = Redis.new
-    signins = $redis.keys "signin:#{month}:#{day}:*"
+    signins = $redis.keys "attendance:signin:#{month}:#{day}:*"
     if signins != []
       return $redis.mget(signins)
     else
@@ -69,7 +69,7 @@ def all_students
   else
     Redis.current.quit
     $redis = Redis.new
-    students = $redis.keys "student*"
+    students = $redis.keys "attendance:student*"
     if students != []
       return $redis.mget(students)
     else
@@ -95,7 +95,7 @@ def known_student?(id)
   else
     Redis.current.quit
     $redis = Redis.new
-    return $redis.get("student:#{id}") != nil
+    return $redis.get("attendance:student:#{id}") != nil
   end
 end
 
