@@ -49,8 +49,12 @@ def list_students(month, day)
     Redis.current.quit
     $redis = Redis.new
     signins = $redis.keys "attendance:signin:#{month}:#{day}:*"
+    ids = []
+    signins.each {|name|
+      ids.push("attendance:student:"+name[-8..-1])
+    }
     if signins != []
-      return $redis.mget(signins)
+      return $redis.mget(ids)
     else
       return []
     end
@@ -93,6 +97,16 @@ def known_student?(id)
   end
 end
 
+def get_student(id)
+  if $backend == "sqlite"
+    return $db.execute("select name from student where id = ?", id).flatten.uniq
+  else
+    Redis.current.quit
+    $redis = Redis.new
+    return $redis.get("attendance:student:#{id}")
+  end
+end
+
 get '/' do
   do_auth
   erb :index
@@ -130,6 +144,7 @@ post '/' do
   do_auth
   if known_student? params["id"]
     checkin_student(params["id"])
+    @name = get_student(params["id"])
   else
     session[:id] = params["id"]
     redirect '/add'

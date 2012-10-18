@@ -2,6 +2,11 @@
 <body>
   <div class="header">Welcome to Paly Robotics</div>
   <div class="main">
+    <% if @name %>
+    <div class="welcomeback">
+      Welcome back, <%= @name %>!
+    </div>
+    <% end %>
     <div class="scan"><p>Please scan your Palo Alto High School ID card or enter it on the keypad.</p></div>
     <form name='signin' action='/' method='post'>
       <input type='text' name='id' id='id' />
